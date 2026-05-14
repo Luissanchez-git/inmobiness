@@ -1,0 +1,357 @@
+<div class="min-h-screen bg-[#f7f5f2] font-sans">
+
+  <!-- PAGE HEADER -->
+  <div class="px-6 py-8 sm:px-10 sm:py-10">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <button (click)="goBack()"
+          class="w-10 h-10 rounded-xl bg-white border border-[#e8e4df] shadow-sm flex items-center justify-center text-[#4a4a5a] hover:bg-[#f0ece7] hover:text-[#1a1a2e] transition-all">
+          <i class="pi pi-arrow-left text-sm"></i>
+        </button>
+        <div>
+          <p class="text-[#c9a96e] text-xs font-semibold tracking-[0.2em] uppercase mb-1">Propiedades</p>
+          <h1 class="text-black text-3xl sm:text-4xl font-extrabold tracking-tight leading-none">Nueva Propiedad</h1>
+        </div>
+      </div>
+      <div class="flex gap-3 self-start sm:self-auto">
+        <button type="button" (click)="goBack()"
+          class="px-4 py-2.5 text-sm font-medium text-[#4a4a5a] bg-white border border-[#e8e4df] rounded-xl hover:bg-[#f0ece7] transition-colors">
+          Cancelar
+        </button>
+        <button type="button" (click)="onSubmit()" [disabled]="form.invalid || isSubmitting"
+          class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#c9a96e] hover:bg-[#b8924f] disabled:opacity-50 disabled:cursor-not-allowed text-[#1a1a2e] font-semibold text-sm rounded-xl transition-all duration-200 hover:shadow-lg">
+          <i class="pi pi-save text-xs"></i>
+          {{ isSubmitting ? 'Guardando...' : 'Guardar Propiedad' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM BODY -->
+  <div class="px-4 sm:px-6 lg:px-10 pb-16">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+        <!-- COLUMNA IZQUIERDA (2/3) -->
+        <div class="xl:col-span-2 space-y-6">
+
+          <!-- ── Información general ── -->
+          <div class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-[#e8e4df] flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
+                <i class="pi pi-info-circle text-[#c9a96e] text-xs"></i>
+              </div>
+              <h2 class="font-bold text-[#1a1a2e] text-sm">Información General</h2>
+            </div>
+            <div class="p-6 space-y-5">
+
+              <!-- Nombre -->
+              <div>
+                <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                  Nombre de la propiedad <span class="text-red-500">*</span>
+                </label>
+                <input type="text" formControlName="nombre" placeholder="Ej. Casa Residencial Lomas"
+                  class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all"
+                  [class.border-red-400]="isInvalid('nombre')" />
+                <small *ngIf="isInvalid('nombre')" class="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <i class="pi pi-exclamation-circle"></i> El nombre es requerido
+                </small>
+              </div>
+
+              <!-- Descripción -->
+              <div>
+                <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                  Descripción
+                </label>
+                <textarea formControlName="descripcion" rows="3"
+                  placeholder="Describe la propiedad, características destacadas, entorno..."
+                  class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all resize-none">
+                </textarea>
+              </div>
+
+              <!-- Tipo y Operación -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="w-full">
+                  <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                    Tipo de propiedad <span class="text-red-500">*</span>
+                  </label>
+                  <p-dropdown [options]="tiposPropiedad" formControlName="tipo" optionLabel="label" optionValue="value"
+                    placeholder="Selecciona un tipo" styleClass="form-dropdown" [style]="{ width: '100%' }"
+                    appendTo="body" [class.border-red-400]="isInvalid('tipo')">
+                  </p-dropdown>
+                  <small *ngIf="isInvalid('tipo')" class="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <i class="pi pi-exclamation-circle"></i> Requerido
+                  </small>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                    Tipo de operación <span class="text-red-500">*</span>
+                  </label>
+                  <div class="flex gap-3 mt-1">
+                    <label *ngFor="let op of operaciones"
+                      class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all duration-150 text-sm font-medium"
+                      [ngClass]="form.get('operacion')?.value === op.value
+                        ? 'border-[#c9a96e] bg-[#c9a96e]/10 text-[#b8924f]'
+                        : 'border-[#e8e4df] bg-[#f7f5f2] text-[#4a4a5a] hover:border-[#c9a96e]/50'">
+                      <input type="radio" formControlName="operacion" [value]="op.value" class="hidden" />
+                      <span>{{ op.icon }}</span>
+                      {{ op.label }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ── Ubicación ── -->
+          <div class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-[#e8e4df] flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
+                <i class="pi pi-map-marker text-[#c9a96e] text-xs"></i>
+              </div>
+              <h2 class="font-bold text-[#1a1a2e] text-sm">Ubicación</h2>
+            </div>
+            <div class="p-6 space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <!-- Estado -->
+                <div>
+                  <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                    Estado <span class="text-red-500">*</span>
+                  </label>
+                  <p-dropdown [options]="estados" formControlName="estado" optionLabel="label" optionValue="value"
+                    placeholder="Estado" styleClass="form-dropdown w-full" (onChange)="onEstadoChange()">
+                  </p-dropdown>
+                </div>
+                <!-- Municipio -->
+                <div>
+                  <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                    Municipio <span class="text-red-500">*</span>
+                  </label>
+                  <p-dropdown [options]="filteredMunicipios" formControlName="municipio" optionLabel="label"
+                    optionValue="value" placeholder="Municipio" styleClass="form-dropdown w-full"
+                    [disabled]="!form.get('estado')?.value">
+                  </p-dropdown>
+                </div>
+                <!-- Colonia -->
+                <div>
+                  <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                    Colonia <span class="text-red-500">*</span>
+                  </label>
+                  <input type="text" formControlName="colonia" placeholder="Ej. Lomas de Chapultepec"
+                    class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all" />
+                </div>
+              </div>
+              <!-- Calle y número -->
+              <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-2">
+                  <label
+                    class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">Calle</label>
+                  <input type="text" formControlName="calle" placeholder="Nombre de la calle"
+                    class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all" />
+                </div>
+                <div>
+                  <label
+                    class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">Número</label>
+                  <input type="text" formControlName="numero" placeholder="123"
+                    class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Características ── -->
+          <div class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-[#e8e4df] flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
+                <i class="pi pi-list text-[#c9a96e] text-xs"></i>
+              </div>
+              <h2 class="font-bold text-[#1a1a2e] text-sm">Características</h2>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+
+                <div *ngFor="let field of caracteristicasFields">
+                  <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                    {{ field.label }}
+                  </label>
+                  <div class="relative">
+                    <span *ngIf="field.prefix" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#9a9a9a] text-sm">
+                      {{ field.prefix }}
+                    </span>
+                    <input type="number" [formControlName]="field.key" [placeholder]="field.placeholder"
+                      class="w-full py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all"
+                      [class.pl-7]="field.prefix" [class.px-4]="!field.prefix" />
+                    <span *ngIf="field.suffix" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9a9a] text-xs">
+                      {{ field.suffix }}
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Imágenes ── -->
+          <div class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-[#e8e4df] flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
+                  <i class="pi pi-images text-[#c9a96e] text-xs"></i>
+                </div>
+                <h2 class="font-bold text-[#1a1a2e] text-sm">Imágenes</h2>
+              </div>
+              <span class="text-xs text-[#9a9a9a]">{{ imagePreviews.length }}/10 fotos</span>
+            </div>
+            <div class="p-6">
+
+              <!-- Zona de drop -->
+              <div
+                class="border-2 border-dashed border-[#e8e4df] rounded-2xl p-8 text-center hover:border-[#c9a96e] hover:bg-[#f7f5f2] transition-all duration-200 cursor-pointer group"
+                (click)="fileInput.click()" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
+                <input #fileInput type="file" multiple accept="image/*" class="hidden"
+                  (change)="onFileSelected($event)" />
+                <div
+                  class="w-14 h-14 rounded-2xl bg-[#f0ece7] group-hover:bg-[#c9a96e]/10 flex items-center justify-center mx-auto mb-3 transition-colors">
+                  <i class="pi pi-cloud-upload text-2xl text-[#c9a96e]"></i>
+                </div>
+                <p class="text-sm font-semibold text-[#1a1a2e] mb-1">Arrastra tus imágenes aquí</p>
+                <p class="text-xs text-[#9a9a9a]">o haz clic para seleccionar • JPG, PNG, WEBP • Máx. 5MB c/u</p>
+              </div>
+
+              <!-- Preview de imágenes -->
+              <div *ngIf="imagePreviews.length > 0" class="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                <div *ngFor="let img of imagePreviews; let i = index"
+                  class="relative aspect-square rounded-xl overflow-hidden border-2 group"
+                  [class.border-[#c9a96e]]="i === 0" [class.border-[#e8e4df]]="i !== 0">
+                  <img [src]="img.url" [alt]="'Imagen ' + (i+1)" class="w-full h-full object-cover" />
+                  <!-- Badge portada -->
+                  <div *ngIf="i === 0"
+                    class="absolute top-1 left-1 px-1.5 py-0.5 bg-[#c9a96e] text-white text-[9px] font-bold rounded-md">
+                    Portada
+                  </div>
+                  <!-- Botón eliminar -->
+                  <button type="button" (click)="removeImage(i)"
+                    class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i class="pi pi-times text-[9px]"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA (1/3) -->
+        <div class="space-y-6">
+
+          <!-- ── Precio ── -->
+          <div class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-[#e8e4df] flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
+                <i class="pi pi-dollar text-[#c9a96e] text-xs"></i>
+              </div>
+              <h2 class="font-bold text-[#1a1a2e] text-sm">Precio</h2>
+            </div>
+            <div class="p-6 space-y-4">
+              <div>
+                <label class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">
+                  Precio <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#9a9a9a] font-semibold text-sm">$</span>
+                  <input type="number" formControlName="precio" placeholder="0"
+                    class="w-full pl-8 pr-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all"
+                    [class.border-red-400]="isInvalid('precio')" />
+                </div>
+                <small *ngIf="isInvalid('precio')" class="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <i class="pi pi-exclamation-circle"></i> El precio es requerido
+                </small>
+              </div>
+              <div>
+                <label
+                  class="block text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a] mb-1.5">Moneda</label>
+                <div class="flex gap-2">
+                  <label *ngFor="let m of monedas"
+                    class="flex-1 flex items-center justify-center py-2.5 rounded-xl border-2 cursor-pointer transition-all text-xs font-bold"
+                    [ngClass]="form.get('moneda')?.value === m.value
+                      ? 'border-[#c9a96e] bg-[#c9a96e]/10 text-[#b8924f]'
+                      : 'border-[#e8e4df] bg-[#f7f5f2] text-[#4a4a5a] hover:border-[#c9a96e]/50'">
+                    <input type="radio" formControlName="moneda" [value]="m.value" class="hidden" />
+                    {{ m.label }}
+                  </label>
+                </div>
+              </div>
+              <!-- Preview precio -->
+              <div *ngIf="form.get('precio')?.value" class="p-3 bg-[#f7f5f2] rounded-xl text-center">
+                <p class="text-[10px] text-[#9a9a9a] uppercase tracking-wider mb-0.5">Precio final</p>
+                <p class="text-2xl font-extrabold text-[#c9a96e]">
+                  {{ form.get('precio')?.value | currency:(form.get('moneda')?.value || 'MXN'):'symbol':'1.0-0' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Estado de publicación ── -->
+          <div class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-[#e8e4df] flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-[#1a1a2e] flex items-center justify-center">
+                <i class="pi pi-eye text-[#c9a96e] text-xs"></i>
+              </div>
+              <h2 class="font-bold text-[#1a1a2e] text-sm">Publicación</h2>
+            </div>
+            <div class="p-6 space-y-3">
+              <label *ngFor="let est of estadosPublicacion"
+                class="flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all" [ngClass]="form.get('estado_publicacion')?.value === est.value
+                  ? est.activeClass
+                  : 'border-[#e8e4df] hover:border-[#c9a96e]/40'">
+                <input type="radio" formControlName="estado_publicacion" [value]="est.value" class="hidden" />
+                <span class="text-base">{{ est.icon }}</span>
+                <div>
+                  <p class="text-sm font-semibold text-[#1a1a2e]">{{ est.label }}</p>
+                  <p class="text-xs text-[#9a9a9a]">{{ est.desc }}</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- ── Resumen ── -->
+          <div class="bg-[#1a1a2e] rounded-2xl p-6 relative overflow-hidden">
+            <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-[#c9a96e]/10"></div>
+            <h2 class="font-bold text-white text-sm mb-4 relative z-10">Resumen</h2>
+            <div class="space-y-2.5 relative z-10">
+              <div class="flex justify-between text-xs">
+                <span class="text-white/50">Tipo</span>
+                <span class="text-white font-medium">{{ form.get('tipo')?.value || '—' }}</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-white/50">Operación</span>
+                <span class="text-white font-medium">{{ form.get('operacion')?.value || '—' }}</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-white/50">Estado</span>
+                <span class="text-white font-medium">{{ form.get('estado')?.value || '—' }}</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-white/50">Imágenes</span>
+                <span class="text-white font-medium">{{ imagePreviews.length }}</span>
+              </div>
+              <div class="flex justify-between text-xs pt-2 border-t border-white/10">
+                <span class="text-white/50">Publicación</span>
+                <span class="font-bold"
+                  [ngClass]="form.get('estado_publicacion')?.value === 'Activa' ? 'text-emerald-400' : 'text-amber-400'">
+                  {{ form.get('estado_publicacion')?.value || '—' }}
+                </span>
+              </div>
+            </div>
+            <button type="button" (click)="onSubmit()" [disabled]="form.invalid || isSubmitting"
+              class="mt-5 w-full py-3 bg-[#c9a96e] hover:bg-[#b8924f] disabled:opacity-40 text-[#1a1a2e] font-bold text-sm rounded-xl transition-all relative z-10">
+              {{ isSubmitting ? 'Guardando...' : 'Guardar Propiedad' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

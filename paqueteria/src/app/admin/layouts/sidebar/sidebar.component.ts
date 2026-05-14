@@ -16,12 +16,13 @@ export class SidebarComponent implements OnInit{
     routesadmin:any =
     [
 
-      { path: '/admin',           title: 'Vender', icon:'pi pi-home'},
-      { path: '/admin/paquetes',  title: 'Arrendar', icon:'pi pi-home'},
+      { path: '/admin',           title: 'Dashboard', icon:'pi pi-chart-bar'},
+      { path: '/admin/propiedades',  title: 'Propiedades', icon:'pi pi-home'},
+      { path: '/admin/usuarios',  title: 'Usuarios', icon:'pi pi-users'},
 
     ]
     routesemployes:any=[
-      { path: '/admin/mis-rutas',           title: 'Mis rutas', icon:'pi pi-car'},
+      { path: '/admin/mis-rutas',           title: 'Mis propiedades', icon:'pi pi-car'},
       { path: '/admin/history',             title: 'Historial', icon:'pi pi-list'},
     ]
     currents:any=[]

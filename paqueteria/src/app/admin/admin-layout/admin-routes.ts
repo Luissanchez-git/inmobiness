@@ -15,9 +15,13 @@ import { UserAddComponent } from '../users/user-add/user-add.component';
 import { RouteAddComponent } from '../routes/route-add/route-add.component';
 import { RouteViewComponent } from '../routes/route-view/route-view.component';
 import { RouteUploadComponent } from '../routes/route-upload/route-upload.component';
+import { PropiedadesComponent } from '../propiedades/propiedades.component';
+import { UsuariosComponent } from '../usuarios/usuarios.component';
+import { HistorialPropiedadesComponent } from '../historialpropiedades/historialpropiedades.component';
+import { addPropiedadComponent } from '../propiedades/add-propiedad/add-propiedad.component';
 
 export const AdminLayoutRoutes: Routes = [
-    { path: '', component: HomeComponent, canActivate:[AdminGuardService] },
+    { path: '', component: HistorialPropiedadesComponent, canActivate:[AdminGuardService] },
 
     { path: 'users', component: UsersComponent,canActivate:[AdminGuardService] },
     { path: 'users/view/:id', component: UserAddComponent,canActivate:[AdminGuardService] },
@@ -27,8 +31,9 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'clients/:id', component: ClientDataComponent,canActivate:[AdminGuardService] },
     { path: 'clients/view/:id', component: ClientAddComponent,canActivate:[AdminGuardService] },
 
-    { path: 'paquetes', component: RecoleccionComponent,canActivate:[AdminGuardService] },
-    { path: 'rutas', component: RoutesComponent,canActivate:[AdminGuardService] },
+    { path: 'propiedades', component: PropiedadesComponent,canActivate:[AdminGuardService] },
+    { path: 'propiedades/add', component: addPropiedadComponent,canActivate:[AdminGuardService] },
+    { path: 'usuarios', component: UsuariosComponent,canActivate:[AdminGuardService] },
     { path: 'rutas/add', component: RouteAddComponent,canActivate:[AdminGuardService] },
     { path: 'rutas/view/:id', component: RouteViewComponent,canActivate:[AdminGuardService] },
     { path: 'rutas/view/:id/upload', component: RouteUploadComponent, canActivate:[AdminGuardService] },
@@ -37,6 +42,8 @@ export const AdminLayoutRoutes: Routes = [
 
     //EMPLOYES ROUTES
     { path: 'mis-rutas', component: EmployeHomeComponent, canActivate:[EmployesGuardService] },
+    { path: 'propiedad/add', component: addPropiedadComponent, canActivate:[EmployesGuardService] },
+
     { path: 'mis-rutas/view/:id', component: RouteViewComponent, canActivate:[EmployesGuardService] },
     { path: 'mis-rutas/view/:id/upload', component: RouteUploadComponent, canActivate:[EmployesGuardService] },
     { path: 'history', component: EmployeHistoryComponent,canActivate:[EmployesGuardService] },

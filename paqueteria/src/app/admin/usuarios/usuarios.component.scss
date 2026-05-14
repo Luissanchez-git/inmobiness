@@ -1,0 +1,58 @@
+/* PrimeNG Dropdown overrides */
+:host ::ng-deep .sort-dropdown {
+  border: 1px solid #e8e4df !important;
+  border-radius: 0.75rem !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  min-width: 160px;
+}
+
+:host ::ng-deep .sort-dropdown .p-dropdown-label {
+  font-size: 13px;
+  color: #4a4a5a;
+  padding: 10px 14px;
+  font-family: inherit;
+}
+
+:host ::ng-deep .sort-dropdown .p-dropdown-label.p-placeholder {
+  color: #b0aba4;
+}
+
+:host ::ng-deep .sort-dropdown .p-dropdown-trigger {
+  color: #9a9a9a;
+  background: transparent;
+  width: 36px;
+}
+
+:host ::ng-deep .sort-dropdown:not(.p-disabled):hover {
+  border-color: #c9a96e !important;
+}
+
+:host ::ng-deep .sort-dropdown.p-focus {
+  border-color: #c9a96e !important;
+  box-shadow: 0 0 0 3px rgba(201,169,110,0.12) !important;
+}
+
+:host ::ng-deep .p-dropdown-panel {
+  border-radius: 12px;
+  border: 1px solid #e8e4df;
+  box-shadow: 0 8px 32px rgba(26,26,46,0.10);
+  overflow: hidden;
+}
+
+:host ::ng-deep .p-dropdown-item {
+  font-size: 13px;
+  color: #1a1a2e;
+  padding: 10px 16px;
+  font-family: inherit;
+}
+
+:host ::ng-deep .p-dropdown-item:hover {
+  background: #f7f5f2 !important;
+  color: #1a1a2e !important;
+}
+
+:host ::ng-deep .p-dropdown-item.p-highlight {
+  background: #1a1a2e !important;
+  color: #c9a96e !important;
+}

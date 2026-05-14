@@ -1,0 +1,73 @@
+/* PrimeNG Dropdown dentro del formulario */
+:host ::ng-deep .form-dropdown {
+  border: 1px solid #e8e4df !important;
+  border-radius: 0.75rem !important;
+  background: #f7f5f2 !important;
+  box-shadow: none !important;
+  width: 100% !important;
+}
+
+:host ::ng-deep .form-dropdown .p-dropdown-label {
+  font-size: 14px;
+  color: #1a1a2e;
+  padding: 12px 16px;
+  font-family: inherit;
+  background: transparent;
+}
+
+:host ::ng-deep .form-dropdown .p-dropdown-label.p-placeholder {
+  color: #b0aba4;
+}
+
+:host ::ng-deep .form-dropdown .p-dropdown-trigger {
+  color: #9a9a9a;
+  background: transparent;
+  width: 40px;
+}
+
+:host ::ng-deep .form-dropdown:not(.p-disabled):hover {
+  border-color: #c9a96e !important;
+}
+
+:host ::ng-deep .form-dropdown.p-focus {
+  border-color: #c9a96e !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(201,169,110,0.12) !important;
+}
+
+:host ::ng-deep .form-dropdown.p-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Panel */
+:host ::ng-deep .p-dropdown-panel {
+  border-radius: 12px;
+  border: 1px solid #e8e4df;
+  box-shadow: 0 8px 32px rgba(26,26,46,0.10);
+  overflow: hidden;
+}
+
+:host ::ng-deep .p-dropdown-item {
+  font-size: 14px;
+  color: #1a1a2e;
+  padding: 10px 16px;
+  font-family: inherit;
+}
+
+:host ::ng-deep .p-dropdown-item:hover {
+  background: #f7f5f2 !important;
+  color: #1a1a2e !important;
+}
+
+:host ::ng-deep .p-dropdown-item.p-highlight {
+  background: #1a1a2e !important;
+  color: #c9a96e !important;
+}
+
+/* Quitar flechas de inputs number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+input[type=number] { -moz-appearance: textfield; }

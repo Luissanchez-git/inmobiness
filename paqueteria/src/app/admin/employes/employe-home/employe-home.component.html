@@ -1,72 +1,358 @@
-@if(!loaded){
-    <app-preloader></app-preloader>
-}
-@else{
-    <div class="w-100">
-        <!-- TITLE SECTION -->
-         <div class="flex justify-between w-100">
-            <h1 class="text-2xl font-bold text-gray-700">Mis rutas</h1>
-            <div>
-               
+<div class="min-h-screen bg-[#f7f5f2] font-sans">
+
+  <!-- HEADER PERFIL -->
+  <div class="bg-[#1a1a2e] px-6 py-8 sm:px-10">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+
+        <!-- Avatar -->
+        <div class="w-16 h-16 rounded-2xl bg-[#c9a96e] flex items-center justify-center text-2xl font-extrabold text-[#1a1a2e] shrink-0">
+          {{ getInitials() }}
+        </div>
+
+        <!-- Info -->
+        <div class="flex-1">
+          <p class="text-[#c9a96e] text-xs font-semibold tracking-[0.2em] uppercase mb-1">Mi cuenta</p>
+          <h1 class="text-white text-2xl sm:text-3xl font-extrabold tracking-tight">
+            {{ usuario.nombre }} {{ usuario.apellido }}
+          </h1>
+          <p class="text-white/40 text-sm mt-0.5">{{ usuario.correo }}</p>
+        </div>
+
+        <!-- Stats globales + botón suscriptor -->
+        <div class="flex flex-col items-start sm:items-end gap-3">
+
+          <div class="flex gap-5 sm:gap-8">
+            <div class="text-center">
+              <p class="text-2xl font-extrabold text-white">{{ totalStats.propiedades }}</p>
+              <p class="text-white/40 text-xs mt-0.5">Propiedades</p>
             </div>
-         </div>
+            <div class="text-center">
+              <p class="text-2xl font-extrabold text-[#c9a96e]">{{ totalStats.matches }}</p>
+              <p class="text-white/40 text-xs mt-0.5">Matches</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-extrabold text-pink-400">{{ totalStats.likes }}</p>
+              <p class="text-white/40 text-xs mt-0.5">Likes</p>
+            </div>
+            <div class="text-center">
+              <p class="text-2xl font-extrabold text-blue-400">{{ totalStats.compartidas }}</p>
+              <p class="text-white/40 text-xs mt-0.5">Compartidas</p>
+            </div>
+          </div>
 
-        <!-- MAIN SECTION -->
-         <div class="w-100 py-4">
-            <p-table [value]="data" [tableStyle]="{ 'min-width': '50rem' }" dataKey="id"
-                #dt2  [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
-                [paginator]="true" currentPageReportTemplate="Mostrando {first} hasta {last} of {totalRecords}"
-                [globalFilterFields]="['user.name','user.email','saldo']">
-                <ng-template pTemplate="caption">
-                    <div class="flex justify-end pt-2">
-                        
-                        <div class="border-gray-200">
-                            <div class="w-64 flex p-2 h-10 items-center gap-2 text-gray-400 ">
-                                <i class="pi pi-search"></i> 
-                                <input type="search" (input)="dt2.filterGlobal($any($event.target).value , 'contains')" placeholder="Buscar" class="p-2 outline-none">
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th class="text-center">Id</th>
-                        <th class="text-center">Fecha Inicio</th>
-                        <th class="text-center">Fecha Fin</th>
-                        <th class="text-center">Status</th>
-                        
-                        <th class="text-center"># Paquetes</th>
-                        <th style="width: 100px;"></th>
-                        <th style="width: 200px;"></th>
-                        
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <!-- Botón solo para suscriptores -->
+          <button
+            *ngIf="esSuscriptor"
+            (click)="abrirModal()"
+            class="flex items-center gap-2 px-5 py-2.5 bg-[#c9a96e] hover:bg-[#b8924f] text-[#1a1a2e] text-sm font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap">
+            <i class="pi pi-plus text-xs"></i>
+            Nueva propiedad
+          </button>
 
-                    <tr>
-                        <td class="text-center">{{ rowData.route.id.toString().padStart(4, '0') }}</td>
-                        <td class="text-center">{{ rowData.route.start_date | date:'mediumDate' }}</td>
-                        <td class="text-center">{{ rowData.route.end_date | date:'mediumDate'}}</td>
-                        <td class="text-center">{{ rowData.route.status }}</td>
-                        <td class="text-center">{{ rowData.packages.length }}</td>
-                       
-                        <td class="text-end">
-                            <p-button label="Detalles" icon="pi pi-arrow-right" 
-                            [outlined]="true"
-                            severity="warn"
-                            [routerLink]="['/admin/mis-rutas/view/'+rowData.route.id]"/>
-                        </td>
-                      
-                    </tr>
-                </ng-template>
-            </p-table>
+        </div>
 
-
-
-
-         </div> 
-         <!-- END MAIN SECTION -->
+      </div>
     </div>
-}
-<p-toast />
-<p-confirmDialog />
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-8">
+
+    <!-- Barra de búsqueda y filtro -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-7">
+      <div class="relative flex-1">
+        <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-[#9a9a9a] text-sm"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="applyFilters()"
+          placeholder="Buscar mis propiedades..."
+          class="w-full pl-10 pr-4 py-3 bg-white border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all" />
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button *ngFor="let f of filtros"
+          (click)="selectedFiltro = f.value; applyFilters()"
+          class="px-4 py-2.5 rounded-xl text-sm font-medium border transition-all duration-150"
+          [ngClass]="selectedFiltro === f.value
+            ? 'bg-[#1a1a2e] border-[#1a1a2e] text-white'
+            : 'bg-white border-[#e8e4df] text-[#4a4a5a] hover:border-[#c9a96e]/50'">
+          {{ f.label }}
+        </button>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <div *ngFor="let prop of filteredProperties"
+        class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden group">
+
+        <!-- Imagen / Icono -->
+        <div class="relative h-40 bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center text-5xl overflow-hidden">
+          {{ getTipoIcon(prop.tipo) }}
+
+          <!-- Badge estado -->
+          <div class="absolute top-3 left-3">
+            <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg"
+              [ngClass]="{
+                'bg-emerald-100 text-emerald-700': prop.estado_publicacion === 'Activa',
+                'bg-amber-100 text-amber-700':     prop.estado_publicacion === 'Pendiente',
+                'bg-red-100 text-red-600':         prop.estado_publicacion === 'Inactiva'
+              }">
+              {{ prop.estado_publicacion }}
+            </span>
+          </div>
+
+          <!-- Badge operación -->
+          <div class="absolute top-3 right-3">
+            <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg"
+              [ngClass]="prop.operacion === 'Venta'
+                ? 'bg-[#c9a96e]/20 text-[#b8924f]'
+                : 'bg-blue-100 text-blue-700'">
+              {{ prop.operacion }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Info propiedad -->
+        <div class="p-4">
+          <h3 class="font-bold text-[#1a1a2e] text-sm leading-snug mb-1 line-clamp-1">{{ prop.nombre }}</h3>
+          <p class="text-[#9a9a9a] text-xs flex items-center gap-1 mb-3">
+            <i class="pi pi-map-marker text-[#c9a96e] text-[10px]"></i>
+            {{ prop.colonia }}, {{ prop.estado }}
+          </p>
+
+          <!-- ── MÉTRICAS ── -->
+          <div class="grid grid-cols-3 gap-2 mb-3">
+
+            <!-- Matches -->
+            <div class="flex flex-col items-center py-2.5 px-1 rounded-xl bg-[#f7f5f2] group/stat hover:bg-[#c9a96e]/10 transition-colors">
+              <div class="flex items-center gap-1 mb-1">
+                <svg class="w-3.5 h-3.5 text-[#c9a96e]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                </svg>
+                <span class="text-[10px] font-bold text-[#c9a96e] uppercase tracking-wide">Match</span>
+              </div>
+              <p class="text-xl font-extrabold text-[#1a1a2e]">{{ prop.metrics.matches }}</p>
+            </div>
+
+            <!-- Likes -->
+            <div class="flex flex-col items-center py-2.5 px-1 rounded-xl bg-[#f7f5f2] hover:bg-pink-50 transition-colors">
+              <div class="flex items-center gap-1 mb-1">
+                <svg class="w-3.5 h-3.5 text-pink-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <span class="text-[10px] font-bold text-pink-500 uppercase tracking-wide">Likes</span>
+              </div>
+              <p class="text-xl font-extrabold text-[#1a1a2e]">{{ prop.metrics.likes }}</p>
+            </div>
+
+            <!-- Compartidas -->
+            <div class="flex flex-col items-center py-2.5 px-1 rounded-xl bg-[#f7f5f2] hover:bg-blue-50 transition-colors">
+              <div class="flex items-center gap-1 mb-1">
+                <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                  <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
+                </svg>
+                <span class="text-[10px] font-bold text-blue-500 uppercase tracking-wide">Comp.</span>
+              </div>
+              <p class="text-xl font-extrabold text-[#1a1a2e]">{{ prop.metrics.compartidas }}</p>
+            </div>
+
+          </div>
+
+          <!-- Barra de engagement -->
+          <div class="mb-3">
+            <div class="flex justify-between text-[10px] text-[#9a9a9a] mb-1">
+              <span>Engagement</span>
+              <span class="font-semibold text-[#1a1a2e]">{{ getEngagement(prop) }}%</span>
+            </div>
+            <div class="h-1.5 bg-[#f0ece7] rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-700"
+                [style.width.%]="getEngagement(prop)"
+                [ngClass]="getEngagement(prop) >= 70 ? 'bg-emerald-500' : getEngagement(prop) >= 40 ? 'bg-[#c9a96e]' : 'bg-[#9a9a9a]'">
+              </div>
+            </div>
+          </div>
+
+          <!-- Precio y fecha -->
+          <div class="flex items-center justify-between pt-3 border-t border-[#f0ece7]">
+            <p class="text-[#c9a96e] font-bold text-base">
+              {{ prop.precio | currency:'MXN':'symbol':'1.0-0' }}
+            </p>
+            <p class="text-[10px] text-[#b0aba4] flex items-center gap-1">
+              <i class="pi pi-calendar text-[9px]"></i>
+              {{ prop.fecha_publicacion | date:'dd/MM/yy' }}
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="filteredProperties.length === 0" class="col-span-full py-24 text-center">
+        <p class="text-5xl mb-4">🏠</p>
+        <p class="text-[#1a1a2e] font-bold text-lg mb-1">Sin propiedades</p>
+        <p class="text-[#9a9a9a] text-sm">
+          {{ searchQuery ? 'No encontramos resultados para tu búsqueda' : 'Aún no has publicado ninguna propiedad' }}
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- MODAL: NUEVA PROPIEDAD                         -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div *ngIf="modalAbierto"
+    class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+    (click)="cerrarModal()">
+
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-[#1a1a2e]/60 backdrop-blur-sm"></div>
+
+    <!-- Panel -->
+    <div
+      class="relative bg-white rounded-t-3xl sm:rounded-3xl w-3/6 sm:max-w-lg shadow-2xl overflow-hidden"
+      (click)="$event.stopPropagation()">
+
+      <!-- Header modal -->
+      <div class="bg-[#1a1a2e] px-6 py-5 flex items-center justify-between">
+        <div>
+          <p class="text-[#c9a96e] text-[10px] font-semibold tracking-[0.2em] uppercase mb-0.5">
+            Suscriptor · Nueva publicación
+          </p>
+          <h2 class="text-white font-extrabold text-lg leading-tight">Agregar propiedad</h2>
+        </div>
+        <button
+          (click)="cerrarModal()"
+          class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all">
+          <i class="pi pi-times text-xs"></i>
+        </button>
+      </div>
+
+      <!-- Formulario -->
+      <div class="p-6 space-y-4 max-h-[65vh] overflow-y-auto">
+
+        <!-- Nombre -->
+        <div>
+          <label class="block text-[10px] font-bold text-[#4a4a5a] mb-1.5 uppercase tracking-widest">
+            Nombre de la propiedad *
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="nuevaPropiedad.nombre"
+            placeholder="Ej. Casa en fraccionamiento Las Flores"
+            class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white transition-all" />
+        </div>
+
+        <!-- Tipo + Operación -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold text-[#4a4a5a] mb-1.5 uppercase tracking-widest">Tipo *</label>
+            <select
+              [(ngModel)]="nuevaPropiedad.tipo"
+              class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:border-[#c9a96e] focus:bg-white transition-all appearance-none cursor-pointer">
+              <option value="">Seleccionar</option>
+              <option value="Casa">🏠 Casa</option>
+              <option value="Departamento">🏢 Departamento</option>
+              <option value="Terreno">🌿 Terreno</option>
+              <option value="Bodega">🏭 Bodega</option>
+              <option value="Granja">🌾 Granja</option>
+              <option value="Rancho">🐄 Rancho</option>
+              <option value="Otro">🏗️ Otro</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-[#4a4a5a] mb-1.5 uppercase tracking-widest">Operación *</label>
+            <select
+              [(ngModel)]="nuevaPropiedad.operacion"
+              class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:border-[#c9a96e] focus:bg-white transition-all appearance-none cursor-pointer">
+              <option value="">Seleccionar</option>
+              <option value="Venta">Venta</option>
+              <option value="Renta">Renta</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Colonia + Estado -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] font-bold text-[#4a4a5a] mb-1.5 uppercase tracking-widest">Colonia</label>
+            <input
+              type="text"
+              [(ngModel)]="nuevaPropiedad.colonia"
+              placeholder="Ej. Centro"
+              class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white transition-all" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold text-[#4a4a5a] mb-1.5 uppercase tracking-widest">Estado</label>
+            <input
+              type="text"
+              [(ngModel)]="nuevaPropiedad.estado"
+              placeholder="Ej. Chihuahua"
+              class="w-full px-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white transition-all" />
+          </div>
+        </div>
+
+        <!-- Precio -->
+        <div>
+          <label class="block text-[10px] font-bold text-[#4a4a5a] mb-1.5 uppercase tracking-widest">Precio (MXN)</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#c9a96e] font-bold text-sm pointer-events-none">$</span>
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="nuevaPropiedad.precio"
+              placeholder="0"
+              class="w-full pl-8 pr-4 py-3 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:bg-white transition-all" />
+          </div>
+        </div>
+
+        <!-- Estado de publicación -->
+        <div>
+          <label class="block text-[10px] font-bold text-[#4a4a5a] mb-2 uppercase tracking-widest">
+            Estado de publicación
+          </label>
+          <div class="flex gap-2">
+            <button
+              *ngFor="let e of estadosPublicacion"
+              type="button"
+              (click)="nuevaPropiedad.estado_publicacion = e.value"
+              class="flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all duration-150"
+              [ngClass]="nuevaPropiedad.estado_publicacion === e.value
+                ? e.activeClass
+                : 'bg-[#f7f5f2] border-[#e8e4df] text-[#9a9a9a] hover:border-[#c9a96e]/40'">
+              {{ e.label }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="px-6 py-4 border-t border-[#f0ece7] flex gap-3 bg-white">
+        <button
+          type="button"
+          (click)="cerrarModal()"
+          class="flex-1 py-3 rounded-xl border border-[#e8e4df] text-sm font-semibold text-[#4a4a5a] hover:bg-[#f7f5f2] transition-all">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          (click)="guardarPropiedad()"
+          [disabled]="!formularioValido"
+          class="flex-1 py-3 rounded-xl bg-[#1a1a2e] text-white text-sm font-bold
+                 hover:bg-[#c9a96e] hover:text-[#1a1a2e]
+                 disabled:opacity-40 disabled:cursor-not-allowed
+                 transition-all duration-200">
+          Publicar propiedad
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

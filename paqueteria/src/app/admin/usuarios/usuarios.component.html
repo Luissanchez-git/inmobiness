@@ -1,0 +1,377 @@
+<div class="min-h-screen bg-[#f7f5f2] font-sans">
+
+  <!-- PAGE HEADER -->
+  <div class="px-6 py-8 sm:px-10 sm:py-10">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <p class="text-[#c9a96e] text-xs font-semibold tracking-[0.2em] uppercase mb-1">Administrador</p>
+        <h1 class="text-black text-4xl sm:text-5xl font-extrabold tracking-tight leading-none">Usuarios</h1>
+        <p class="text-black/40 text-sm mt-2">{{ filteredUsers.length }} usuarios encontrados</p>
+      </div>
+      <button (click)="openCreateModal()"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#c9a96e] hover:bg-[#b8924f] text-[#1a1a2e] font-semibold text-sm rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-px self-start sm:self-auto whitespace-nowrap">
+        <i class="pi pi-plus text-xs"></i>
+        Nuevo Usuario
+      </button>
+    </div>
+  </div>
+
+  <div class="px-4 sm:px-6 lg:px-10 py-4">
+    <div class="flex flex-col lg:flex-row gap-8">
+
+      <!-- SIDEBAR FILTROS -->
+      <aside class="w-full lg:w-64 shrink-0">
+        <div class="bg-white rounded-2xl shadow-sm border border-[#e8e4df] overflow-hidden sticky top-6">
+
+          <div class="px-6 py-5 border-b border-[#e8e4df] flex items-center justify-between">
+            <span class="text-[#1a1a2e] font-bold text-sm tracking-wide uppercase">Filtros</span>
+            <button (click)="clearFilters()" class="text-[#c9a96e] text-xs font-medium hover:text-[#b8924f] transition-colors">
+              Limpiar todo
+            </button>
+          </div>
+
+          <div class="p-6 space-y-7">
+
+            <!-- Filtro: Rol -->
+            <div>
+              <p class="text-[#1a1a2e] text-xs font-bold tracking-[0.15em] uppercase mb-3 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] inline-block"></span>
+                Rol
+              </p>
+              <div class="space-y-2">
+                <label *ngFor="let rol of roles"
+                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150"
+                  [ngClass]="selectedRol === rol.value ? 'bg-[#1a1a2e]' : 'bg-[#f7f5f2] hover:bg-[#f0ece7]'">
+                  <input type="radio" name="rol" [value]="rol.value"
+                    [(ngModel)]="selectedRol" (change)="applyFilters()"
+                    class="accent-[#c9a96e] w-4 h-4 cursor-pointer" />
+                  <span class="text-base">{{ rol.icon }}</span>
+                  <span class="text-sm font-medium transition-colors flex-1"
+                    [ngClass]="selectedRol === rol.value ? 'text-white' : 'text-[#4a4a5a]'">
+                    {{ rol.label }}
+                  </span>
+                  <span class="text-xs px-2 py-0.5 rounded-full font-medium"
+                    [ngClass]="selectedRol === rol.value ? 'bg-white/20 text-[#c9a96e]' : 'bg-[#e8e4df] text-[#9a9a9a]'">
+                    {{ getCountByRol(rol.value) }}
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="h-px bg-[#e8e4df]"></div>
+
+            <!-- Filtro: Estado -->
+            <div>
+              <p class="text-[#1a1a2e] text-xs font-bold tracking-[0.15em] uppercase mb-3 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] inline-block"></span>
+                Estado
+              </p>
+              <div class="space-y-2">
+                <label *ngFor="let est of estados"
+                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150"
+                  [ngClass]="selectedEstado === est.value ? 'bg-[#1a1a2e]' : 'bg-[#f7f5f2] hover:bg-[#f0ece7]'">
+                  <input type="radio" name="estado" [value]="est.value"
+                    [(ngModel)]="selectedEstado" (change)="applyFilters()"
+                    class="accent-[#c9a96e] w-4 h-4 cursor-pointer" />
+                  <span class="text-sm font-medium transition-colors flex-1"
+                    [ngClass]="selectedEstado === est.value ? 'text-white' : 'text-[#4a4a5a]'">
+                    {{ est.label }}
+                  </span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 min-w-0">
+
+        <!-- Barra de búsqueda -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-6">
+          <div class="relative flex-1">
+            <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-[#9a9a9a] text-sm"></i>
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              (input)="applyFilters()"
+              placeholder="Buscar por nombre, correo, teléfono..."
+              class="w-full pl-10 pr-4 py-3 bg-white border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all" />
+          </div>
+          <div class="flex gap-2">
+            <button (click)="viewMode = 'grid'"
+              class="p-3 rounded-xl border transition-all duration-150"
+              [ngClass]="viewMode === 'grid' ? 'bg-[#1a1a2e] border-[#1a1a2e] text-white' : 'bg-white border-[#e8e4df] text-[#9a9a9a]'">
+              <i class="pi pi-th-large text-sm"></i>
+            </button>
+            <button (click)="viewMode = 'list'"
+              class="p-3 rounded-xl border transition-all duration-150"
+              [ngClass]="viewMode === 'list' ? 'bg-[#1a1a2e] border-[#1a1a2e] text-white' : 'bg-white border-[#e8e4df] text-[#9a9a9a]'">
+              <i class="pi pi-list text-sm"></i>
+            </button>
+            <p-dropdown
+              [options]="sortOptions"
+              [(ngModel)]="selectedSort"
+              optionLabel="label"
+              (onChange)="applyFilters()"
+              styleClass="sort-dropdown"
+              placeholder="Ordenar">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <!-- Tags filtros activos -->
+        <div *ngIf="hasActiveFilters()" class="flex flex-wrap gap-2 mb-5">
+          <span *ngIf="selectedRol"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e] text-white text-xs font-medium rounded-full">
+            {{ getLabelRol() }}
+            <button (click)="selectedRol = null; applyFilters()" class="hover:text-[#c9a96e] transition-colors ml-0.5">
+              <i class="pi pi-times text-[10px]"></i>
+            </button>
+          </span>
+          <span *ngIf="selectedEstado"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e] text-white text-xs font-medium rounded-full">
+            {{ getLabelEstado() }}
+            <button (click)="selectedEstado = null; applyFilters()" class="hover:text-[#c9a96e] transition-colors ml-0.5">
+              <i class="pi pi-times text-[10px]"></i>
+            </button>
+          </span>
+        </div>
+
+        <!-- ── GRID VIEW ── -->
+        <div *ngIf="viewMode === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+          <div *ngFor="let user of filteredUsers"
+            class="bg-white rounded-2xl overflow-hidden border border-[#e8e4df] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+
+            <!-- Card header con avatar -->
+            <div class="relative h-20 bg-gradient-to-br from-[#1a1a2e] to-[#2d2d4e] flex items-center justify-center overflow-hidden">
+              <div class="absolute inset-0 opacity-20"
+                style="background-image: radial-gradient(circle at 70% 50%, #c9a96e 0%, transparent 60%)"></div>
+              <!-- Acciones hover -->
+              <div class="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <button (click)="editUser(user)"
+                  class="p-1.5 bg-white/10 hover:bg-[#c9a96e] text-white rounded-lg transition-colors backdrop-blur-sm">
+                  <i class="pi pi-pencil text-xs"></i>
+                </button>
+                <button (click)="deleteUser(user)"
+                  class="p-1.5 bg-white/10 hover:bg-red-500 text-white rounded-lg transition-colors backdrop-blur-sm">
+                  <i class="pi pi-trash text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Avatar flotante -->
+            <div class="flex justify-center -mt-8 mb-3 relative z-10">
+              <div class="w-16 h-16 rounded-2xl border-4 border-white shadow-md flex items-center justify-center text-xl font-bold text-white"
+                [ngClass]="getRolColor(user.rol)">
+                {{ getInitials(user.nombre, user.apellido) }}
+              </div>
+            </div>
+
+            <div class="px-4 pb-4 text-center">
+              <h3 class="font-bold text-[#1a1a2e] text-sm">{{ user.nombre }} {{ user.apellido }}</h3>
+              <p class="text-[#9a9a9a] text-xs mt-0.5 truncate">{{ user.correo }}</p>
+
+              <div class="flex items-center justify-center gap-2 mt-2">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
+                  [ngClass]="getRolBadgeClass(user.rol)">
+                  {{ user.rol }}
+                </span>
+                <span class="text-xs font-medium px-2.5 py-1 rounded-full"
+                  [ngClass]="user.activo ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'">
+                  {{ user.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </div>
+
+              <div class="mt-3 pt-3 border-t border-[#f0ece7] grid grid-cols-2 gap-2 text-xs text-[#6a6a7a]">
+                <div class="flex items-center gap-1 justify-center truncate">
+                  <i class="pi pi-phone text-[#c9a96e] text-[10px]"></i>
+                  <span class="truncate">{{ user.telefono || '—' }}</span>
+                </div>
+                <div class="flex items-center gap-1 justify-center">
+                  <i class="pi pi-share-alt text-[#c9a96e] text-[10px]"></i>
+                  <span>{{ user.propiedades_compartidas }} props</span>
+                </div>
+              </div>
+
+              <div class="mt-2 text-[10px] text-[#b0aba4]">
+                Último acceso: {{ user.ultimo_acceso | date:'dd/MM/yyyy' }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div *ngIf="filteredUsers.length === 0" class="col-span-full py-20 text-center">
+            <p class="text-5xl mb-4">👤</p>
+            <p class="text-[#1a1a2e] font-bold text-lg mb-1">Sin resultados</p>
+            <p class="text-[#9a9a9a] text-sm">Intenta ajustar los filtros de búsqueda</p>
+            <button (click)="clearFilters()"
+              class="mt-4 px-5 py-2 bg-[#c9a96e] text-white text-sm font-medium rounded-xl hover:bg-[#b8924f] transition-colors">
+              Limpiar filtros
+            </button>
+          </div>
+        </div>
+
+        <!-- ── LIST VIEW ── -->
+        <div *ngIf="viewMode === 'list'" class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm overflow-hidden">
+
+          <!-- Thead -->
+          <div class="grid grid-cols-[auto_1fr_1fr_auto_auto_auto_auto] gap-4 px-5 py-3 bg-[#f7f5f2] border-b border-[#e8e4df] text-[10px] font-bold tracking-[0.12em] uppercase text-[#9a9a9a]">
+            <span class="w-10"></span>
+            <span>Nombre</span>
+            <span>Contacto</span>
+            <span>Rol</span>
+            <span>Estado</span>
+            <span class="text-center">Props.</span>
+            <span class="text-center">Acciones</span>
+          </div>
+
+          <div *ngFor="let user of filteredUsers; let last = last"
+            class="grid grid-cols-[auto_1fr_1fr_auto_auto_auto_auto] gap-4 items-center px-5 py-3.5 hover:bg-[#faf8f5] transition-colors group"
+            [class.border-b]="!last" [class.border-[#f0ece7]]="!last">
+
+            <!-- Avatar -->
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0"
+              [ngClass]="getRolColor(user.rol)">
+              {{ getInitials(user.nombre, user.apellido) }}
+            </div>
+
+            <!-- Nombre -->
+            <div class="min-w-0">
+              <p class="font-semibold text-[#1a1a2e] text-sm truncate">{{ user.nombre }} {{ user.apellido }}</p>
+              <p class="text-[#9a9a9a] text-xs mt-0.5">Desde {{ user.fecha_registro | date:'MMM yyyy' }}</p>
+            </div>
+
+            <!-- Contacto -->
+            <div class="min-w-0">
+              <p class="text-[#4a4a5a] text-xs truncate">{{ user.correo }}</p>
+              <p class="text-[#9a9a9a] text-xs mt-0.5">{{ user.telefono || '—' }}</p>
+            </div>
+
+            <!-- Rol -->
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0"
+              [ngClass]="getRolBadgeClass(user.rol)">
+              {{ user.rol }}
+            </span>
+
+            <!-- Estado -->
+            <span class="text-xs font-medium px-2.5 py-1 rounded-full shrink-0"
+              [ngClass]="user.activo ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'">
+              {{ user.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+
+            <!-- Props compartidas -->
+            <div class="flex items-center justify-center gap-1 shrink-0">
+              <i class="pi pi-share-alt text-[#c9a96e] text-xs"></i>
+              <span class="text-sm font-bold text-[#1a1a2e]">{{ user.propiedades_compartidas }}</span>
+            </div>
+
+            <!-- Acciones -->
+            <div class="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button (click)="viewUser(user)"
+                class="p-1.5 rounded-lg hover:bg-[#f0ece7] text-[#9a9a9a] hover:text-[#1a1a2e] transition-colors">
+                <i class="pi pi-eye text-sm"></i>
+              </button>
+              <button (click)="editUser(user)"
+                class="p-1.5 rounded-lg hover:bg-[#f0ece7] text-[#9a9a9a] hover:text-[#c9a96e] transition-colors">
+                <i class="pi pi-pencil text-sm"></i>
+              </button>
+              <button (click)="deleteUser(user)"
+                class="p-1.5 rounded-lg hover:bg-red-50 text-[#9a9a9a] hover:text-red-500 transition-colors">
+                <i class="pi pi-trash text-sm"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Empty list -->
+          <div *ngIf="filteredUsers.length === 0" class="py-20 text-center">
+            <p class="text-5xl mb-4">👤</p>
+            <p class="text-[#1a1a2e] font-bold text-lg mb-1">Sin resultados</p>
+            <p class="text-[#9a9a9a] text-sm">Intenta ajustar los filtros</p>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ── MODAL CREAR / EDITAR ── -->
+  <div *ngIf="showModal"
+    class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
+    (click)="closeModal()">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+      (click)="$event.stopPropagation()">
+
+      <!-- Modal header -->
+      <div class="bg-[#1a1a2e] px-6 py-5 flex items-center justify-between">
+        <div>
+          <p class="text-[#c9a96e] text-[10px] font-semibold tracking-[0.15em] uppercase">
+            {{ editingUser ? 'Editar' : 'Nuevo' }}
+          </p>
+          <h3 class="text-white font-bold text-lg">Usuario</h3>
+        </div>
+        <button (click)="closeModal()"
+          class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors">
+          <i class="pi pi-times text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold tracking-[0.1em] uppercase text-[#9a9a9a] mb-1.5">Nombre</label>
+            <input type="text" [(ngModel)]="modalForm.nombre" placeholder="Juan"
+              class="w-full px-3 py-2.5 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:border-[#c9a96e] transition-all" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold tracking-[0.1em] uppercase text-[#9a9a9a] mb-1.5">Apellido</label>
+            <input type="text" [(ngModel)]="modalForm.apellido" placeholder="Pérez"
+              class="w-full px-3 py-2.5 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:border-[#c9a96e] transition-all" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold tracking-[0.1em] uppercase text-[#9a9a9a] mb-1.5">Correo</label>
+          <input type="email" [(ngModel)]="modalForm.correo" placeholder="juan@correo.com"
+            class="w-full px-3 py-2.5 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:border-[#c9a96e] transition-all" />
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold tracking-[0.1em] uppercase text-[#9a9a9a] mb-1.5">Teléfono</label>
+          <input type="tel" [(ngModel)]="modalForm.telefono" placeholder="+52 614 000 0000"
+            class="w-full px-3 py-2.5 bg-[#f7f5f2] border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:border-[#c9a96e] transition-all" />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-[10px] font-bold tracking-[0.1em] uppercase text-[#9a9a9a] mb-1.5">Rol</label>
+            <p-dropdown [options]="roles" [(ngModel)]="modalForm.rol" optionLabel="label" optionValue="value"
+              styleClass="sort-dropdown w-full" placeholder="Selecciona">
+            </p-dropdown>
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold tracking-[0.1em] uppercase text-[#9a9a9a] mb-1.5">Estado</label>
+            <div class="flex items-center gap-3 mt-1">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" [(ngModel)]="modalForm.activo" class="accent-[#c9a96e] w-4 h-4" />
+                <span class="text-sm text-[#4a4a5a]">{{ modalForm.activo ? 'Activo' : 'Inactivo' }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="px-6 py-4 bg-[#f7f5f2] border-t border-[#e8e4df] flex justify-end gap-3">
+        <button (click)="closeModal()"
+          class="px-4 py-2 text-sm font-medium text-[#4a4a5a] bg-white border border-[#e8e4df] rounded-xl hover:bg-[#f0ece7] transition-colors">
+          Cancelar
+        </button>
+        <button (click)="saveUser()"
+          class="px-5 py-2 text-sm font-semibold text-[#1a1a2e] bg-[#c9a96e] hover:bg-[#b8924f] rounded-xl transition-colors">
+          {{ editingUser ? 'Guardar cambios' : 'Crear usuario' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

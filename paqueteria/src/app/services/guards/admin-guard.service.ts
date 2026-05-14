@@ -11,22 +11,22 @@ export class AdminGuardService {
   constructor(private router: Router) { }
 
   canActivate(next: ActivatedRouteSnapshot,state: RouterStateSnapshot) {
-    
-    if (localStorage.getItem('dpm_'+environment.location)) { 
+
+    if (localStorage.getItem('dpm_'+environment.location)) {
       const tokenInfo:any = this.getDecodedAccessToken(localStorage.getItem('dpm_'+environment.location)+"");
       if(tokenInfo.level==1){
         return true
       }else{
-        
+
         this.router.navigateByUrl('/');
-        return false; 
+        return false;
       }
-     
+
     }
     localStorage.removeItem('dpm_'+environment.location);
     this.router.navigateByUrl('/');
-  
-    
+
+
     return false;
   }
   getDecodedAccessToken(token: string): any {

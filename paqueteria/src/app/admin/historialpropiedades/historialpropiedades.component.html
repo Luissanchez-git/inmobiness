@@ -1,0 +1,295 @@
+<div class="min-h-screen bg-[#f7f5f2] font-sans">
+
+  <!-- PAGE HEADER -->
+  <div class="px-6 py-8 sm:px-10 sm:py-10">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <p class="text-[#c9a96e] text-xs font-semibold tracking-[0.2em] uppercase mb-1">Administrador</p>
+        <h1 class="text-black text-4xl sm:text-5xl font-extrabold tracking-tight leading-none">Dashboard</h1>
+        <p class="text-black/40 text-sm mt-2">Resumen general de propiedades</p>
+      </div>
+      <div class="flex items-center gap-2 px-4 py-2 bg-white border border-[#e8e4df] rounded-xl text-sm text-[#4a4a5a] shadow-sm">
+        <i class="pi pi-calendar text-[#c9a96e]"></i>
+        <span>{{ today | date:'dd MMMM yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-4 sm:px-6 lg:px-10 pb-10 space-y-8">
+
+    <!-- ── TARJETAS PRINCIPALES ── -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+
+      <!-- Total propiedades -->
+      <div class="bg-[#1a1a2e] rounded-2xl p-6 relative overflow-hidden">
+        <div class="absolute -top-6 -right-6 w-32 h-32 rounded-full bg-white/5"></div>
+        <div class="absolute -bottom-4 -left-4 w-20 h-20 rounded-full bg-[#c9a96e]/10"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-[#c9a96e]/20 flex items-center justify-center">
+              <i class="pi pi-building text-[#c9a96e]"></i>
+            </div>
+            <span class="text-white/30 text-xs font-medium uppercase tracking-wider">Total</span>
+          </div>
+          <p class="text-4xl font-extrabold text-white mb-1">{{ stats.total }}</p>
+          <p class="text-white/50 text-sm">Propiedades registradas</p>
+          <div class="mt-4 pt-4 border-t border-white/10 flex items-center gap-1.5 text-xs text-emerald-400">
+            <i class="pi pi-arrow-up text-[10px]"></i>
+            <span>+{{ stats.nuevasMes }} este mes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Venta -->
+      <div class="bg-white rounded-2xl p-6 border border-[#e8e4df] shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+        <div class="absolute top-0 right-0 w-24 h-24 rounded-bl-[4rem] bg-[#c9a96e]/5 group-hover:bg-[#c9a96e]/10 transition-colors"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-[#c9a96e]/15 flex items-center justify-center text-lg">🏷️</div>
+            <span class="text-[#9a9a9a] text-xs font-medium uppercase tracking-wider">Venta</span>
+          </div>
+          <p class="text-4xl font-extrabold text-[#1a1a2e] mb-1">{{ stats.venta }}</p>
+          <p class="text-[#9a9a9a] text-sm">Propiedades en venta</p>
+          <div class="mt-4 pt-4 border-t border-[#f0ece7]">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-[#9a9a9a]">Del total</span>
+              <span class="font-bold text-[#c9a96e]">{{ getPct(stats.venta) }}%</span>
+            </div>
+            <div class="mt-1.5 h-1.5 bg-[#f0ece7] rounded-full overflow-hidden">
+              <div class="h-full bg-[#c9a96e] rounded-full transition-all duration-700"
+                [style.width.%]="getPct(stats.venta)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Renta -->
+      <div class="bg-white rounded-2xl p-6 border border-[#e8e4df] shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+        <div class="absolute top-0 right-0 w-24 h-24 rounded-bl-[4rem] bg-[#4a6fa5]/5 group-hover:bg-[#4a6fa5]/10 transition-colors"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-[#4a6fa5]/10 flex items-center justify-center text-lg">🔑</div>
+            <span class="text-[#9a9a9a] text-xs font-medium uppercase tracking-wider">Renta</span>
+          </div>
+          <p class="text-4xl font-extrabold text-[#1a1a2e] mb-1">{{ stats.renta }}</p>
+          <p class="text-[#9a9a9a] text-sm">Propiedades en renta</p>
+          <div class="mt-4 pt-4 border-t border-[#f0ece7]">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-[#9a9a9a]">Del total</span>
+              <span class="font-bold text-[#4a6fa5]">{{ getPct(stats.renta) }}%</span>
+            </div>
+            <div class="mt-1.5 h-1.5 bg-[#f0ece7] rounded-full overflow-hidden">
+              <div class="h-full bg-[#4a6fa5] rounded-full transition-all duration-700"
+                [style.width.%]="getPct(stats.renta)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activas -->
+      <div class="bg-white rounded-2xl p-6 border border-[#e8e4df] shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+        <div class="absolute top-0 right-0 w-24 h-24 rounded-bl-[4rem] bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors"></div>
+        <div class="relative z-10">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-lg">✅</div>
+            <span class="text-[#9a9a9a] text-xs font-medium uppercase tracking-wider">Activas</span>
+          </div>
+          <p class="text-4xl font-extrabold text-[#1a1a2e] mb-1">{{ stats.activas }}</p>
+          <p class="text-[#9a9a9a] text-sm">Publicaciones activas</p>
+          <div class="mt-4 pt-4 border-t border-[#f0ece7]">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-[#9a9a9a]">Del total</span>
+              <span class="font-bold text-emerald-600">{{ getPct(stats.activas) }}%</span>
+            </div>
+            <div class="mt-1.5 h-1.5 bg-[#f0ece7] rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-500 rounded-full transition-all duration-700"
+                [style.width.%]="getPct(stats.activas)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FILA MEDIA ── -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+      <!-- Desglose por tipo -->
+      <div class="lg:col-span-1 bg-white rounded-2xl border border-[#e8e4df] shadow-sm p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-[#1a1a2e] font-bold text-base">Por tipo</h2>
+          <span class="text-[10px] font-bold tracking-[0.15em] uppercase text-[#9a9a9a]">Propiedades</span>
+        </div>
+        <div class="space-y-4">
+          <div *ngFor="let tipo of statsByTipo" class="flex items-center gap-3">
+            <span class="text-xl w-7 text-center shrink-0">{{ tipo.icon }}</span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-[#1a1a2e]">{{ tipo.label }}</span>
+                <span class="text-sm font-bold text-[#1a1a2e]">{{ tipo.count }}</span>
+              </div>
+              <div class="h-1.5 bg-[#f0ece7] rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-700"
+                  [style.width.%]="getTypePct(tipo.count)"
+                  [ngClass]="tipo.color"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desglose Venta vs Renta por estado -->
+      <div class="lg:col-span-2 bg-white rounded-2xl border border-[#e8e4df] shadow-sm p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-[#1a1a2e] font-bold text-base">Venta vs Renta por estado</h2>
+        </div>
+        <div class="space-y-5">
+          <div *ngFor="let est of statsByEstado">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-semibold text-[#1a1a2e]">{{ est.estado }}</span>
+              <span class="text-xs text-[#9a9a9a]">{{ est.venta + est.renta }} total</span>
+            </div>
+            <!-- Barra doble -->
+            <div class="flex h-7 rounded-xl overflow-hidden gap-0.5">
+              <div class="flex items-center justify-center text-white text-xs font-bold transition-all duration-700 bg-[#c9a96e]"
+                [style.flex]="est.venta">
+                <span *ngIf="est.venta > 0">{{ est.venta }} venta</span>
+              </div>
+              <div class="flex items-center justify-center text-white text-xs font-bold transition-all duration-700 bg-[#4a6fa5]"
+                [style.flex]="est.renta">
+                <span *ngIf="est.renta > 0">{{ est.renta }} renta</span>
+              </div>
+            </div>
+            <div class="flex gap-4 mt-1.5 text-[10px] text-[#9a9a9a]">
+              <span class="flex items-center gap-1">
+                <span class="inline-block w-2 h-2 rounded-full bg-[#c9a96e]"></span>
+                Venta: {{ est.venta }}
+              </span>
+              <span class="flex items-center gap-1">
+                <span class="inline-block w-2 h-2 rounded-full bg-[#4a6fa5]"></span>
+                Renta: {{ est.renta }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leyenda -->
+        <div class="flex gap-6 mt-6 pt-5 border-t border-[#f0ece7]">
+          <div class="flex items-center gap-2 text-xs text-[#4a4a5a]">
+            <span class="inline-block w-3 h-3 rounded-full bg-[#c9a96e]"></span>
+            En Venta
+          </div>
+          <div class="flex items-center gap-2 text-xs text-[#4a4a5a]">
+            <span class="inline-block w-3 h-3 rounded-full bg-[#4a6fa5]"></span>
+            En Renta
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FILA INFERIOR ── -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+      <!-- Estado de publicaciones -->
+      <div class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-[#1a1a2e] font-bold text-base">Estado de publicaciones</h2>
+        </div>
+
+        <!-- Donut visual simple -->
+        <div class="flex items-center gap-8">
+          <div class="relative w-28 h-28 shrink-0">
+            <!-- <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+              <!-- Track -->
+              <!-- <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0ece7" stroke-width="3.5"/> -->
+              <!-- Activas -->
+              <!-- <circle cx="18" cy="18" r="15.9" fill="none" stroke="#10b981" stroke-width="3.5"
+                stroke-dasharray="{{ getDonutDash(stats.activas) }} 100"
+                stroke-dashoffset="0"
+                stroke-linecap="round"/> -->
+              <!-- Pendientes -->
+              <!-- <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f59e0b" stroke-width="3.5"
+                stroke-dasharray="{{ getDonutDash(stats.pendientes) }} 100"
+                [attr.stroke-dashoffset]="getDonutOffset(stats.activas)"
+                stroke-linecap="round"/> -->
+              <!-- Inactivas -->
+              <!-- <circle cx="18" cy="18" r="15.9" fill="none" stroke="#ef4444" stroke-width="3.5"
+                stroke-dasharray="{{ getDonutDash(stats.inactivas) }} 100"
+                [attr.stroke-dashoffset]="getDonutOffset(stats.activas + stats.pendientes)"
+                stroke-linecap="round"/> -->
+            <!-- </svg> -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="text-2xl font-extrabold text-[#1a1a2e]">{{ stats.total }}</span>
+              <span class="text-[10px] text-[#9a9a9a]">total</span>
+            </div>
+          </div>
+
+          <div class="flex-1 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                <span class="text-sm text-[#4a4a5a]">Activas</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-[#1a1a2e]">{{ stats.activas }}</span>
+                <span class="text-xs text-[#9a9a9a] w-8 text-right">{{ getPct(stats.activas) }}%</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                <span class="text-sm text-[#4a4a5a]">Pendientes</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-[#1a1a2e]">{{ stats.pendientes }}</span>
+                <span class="text-xs text-[#9a9a9a] w-8 text-right">{{ getPct(stats.pendientes) }}%</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0"></span>
+                <span class="text-sm text-[#4a4a5a]">Inactivas</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-[#1a1a2e]">{{ stats.inactivas }}</span>
+                <span class="text-xs text-[#9a9a9a] w-8 text-right">{{ getPct(stats.inactivas) }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Últimas propiedades subidas -->
+      <div class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-[#1a1a2e] font-bold text-base">Últimas subidas</h2>
+          <span class="text-xs text-[#c9a96e] font-medium cursor-pointer hover:text-[#b8924f] transition-colors">
+            Ver todas →
+          </span>
+        </div>
+        <div class="space-y-3">
+          <div *ngFor="let prop of recentProperties"
+            class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f7f5f2] transition-colors cursor-pointer group">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center text-lg shrink-0">
+              {{ getTipoIcon(prop.tipo) }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-[#1a1a2e] truncate">{{ prop.nombre }}</p>
+              <p class="text-xs text-[#9a9a9a] flex items-center gap-1">
+                <i class="pi pi-map-marker text-[#c9a96e] text-[9px]"></i>
+                {{ prop.colonia }}, {{ prop.estado }}
+              </p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-xs font-bold text-[#c9a96e]">{{ prop.precio | currency:'MXN':'symbol':'1.0-0' }}</p>
+              <span class="text-[10px] px-1.5 py-0.5 rounded-md font-medium"
+                [ngClass]="prop.operacion === 'Venta' ? 'bg-[#c9a96e]/15 text-[#b8924f]' : 'bg-[#4a6fa5]/10 text-[#4a6fa5]'">
+                {{ prop.operacion }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
