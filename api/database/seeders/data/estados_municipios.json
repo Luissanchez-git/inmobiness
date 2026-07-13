@@ -1,0 +1,356 @@
+{
+  "estados": [
+    {
+      "nombre": "Chihuahua",
+      "codigo": "CHH",
+      "municipios": [
+        {
+          "nombre": "Ahumada",
+          "codigo_postal": "32800"
+        },
+        {
+          "nombre": "Aldama",
+          "codigo_postal": "32900"
+        },
+        {
+          "nombre": "Allende",
+          "codigo_postal": "33920"
+        },
+        {
+          "nombre": "Aquiles Serdán",
+          "codigo_postal": "31650"
+        },
+        {
+          "nombre": "Ascensión",
+          "codigo_postal": "31820"
+        },
+        {
+          "nombre": "Bachíniva",
+          "codigo_postal": "31660"
+        },
+        {
+          "nombre": "Balleza",
+          "codigo_postal": "33560"
+        },
+        {
+          "nombre": "Batopilas",
+          "codigo_postal": "33400"
+        },
+        {
+          "nombre": "Bocoyna",
+          "codigo_postal": "33200"
+        },
+        {
+          "nombre": "Buenaventura",
+          "codigo_postal": "31880"
+        },
+        {
+          "nombre": "Camargo",
+          "codigo_postal": "33600"
+        },
+        {
+          "nombre": "Carichí",
+          "codigo_postal": "33280"
+        },
+        {
+          "nombre": "Casas Grandes",
+          "codigo_postal": "31850"
+        },
+        {
+          "nombre": "Chihuahua",
+          "codigo_postal": "31000"
+        },
+        {
+          "nombre": "Chínipas",
+          "codigo_postal": "33360"
+        },
+        {
+          "nombre": "Coronado",
+          "codigo_postal": "33990"
+        },
+        {
+          "nombre": "Coyame del Sotol",
+          "codigo_postal": "32850"
+        },
+        {
+          "nombre": "Cuauhtémoc",
+          "codigo_postal": "31500"
+        },
+        {
+          "nombre": "Cusihuiriachi",
+          "codigo_postal": "33240"
+        },
+        {
+          "nombre": "Delicias",
+          "codigo_postal": "33000"
+        },
+        {
+          "nombre": "Dr. Belisario Domínguez",
+          "codigo_postal": "33140"
+        },
+        {
+          "nombre": "El Tule",
+          "codigo_postal": "33550"
+        },
+        {
+          "nombre": "Galeana",
+          "codigo_postal": "31870"
+        },
+        {
+          "nombre": "Gran Morelos",
+          "codigo_postal": "33260"
+        },
+        {
+          "nombre": "Guachochi",
+          "codigo_postal": "33180"
+        },
+        {
+          "nombre": "Guadalupe",
+          "codigo_postal": "32740"
+        },
+        {
+          "nombre": "Guadalupe y Calvo",
+          "codigo_postal": "33470"
+        },
+        {
+          "nombre": "Guazapares",
+          "codigo_postal": "33380"
+        },
+        {
+          "nombre": "Guerrero",
+          "codigo_postal": "31680"
+        },
+        {
+          "nombre": "Gómez Farías",
+          "codigo_postal": "31900"
+        },
+        {
+          "nombre": "Hidalgo del Parral",
+          "codigo_postal": "33800"
+        },
+        {
+          "nombre": "Huejotitán",
+          "codigo_postal": "33540"
+        },
+        {
+          "nombre": "Ignacio Zaragoza",
+          "codigo_postal": "31920"
+        },
+        {
+          "nombre": "Janos",
+          "codigo_postal": "31840"
+        },
+        {
+          "nombre": "Jiménez",
+          "codigo_postal": "33970"
+        },
+        {
+          "nombre": "Julimes",
+          "codigo_postal": "32950"
+        },
+        {
+          "nombre": "Juárez",
+          "codigo_postal": "32000"
+        },
+        {
+          "nombre": "La Cruz",
+          "codigo_postal": "33670"
+        },
+        {
+          "nombre": "López",
+          "codigo_postal": "33940"
+        },
+        {
+          "nombre": "Madera",
+          "codigo_postal": "31940"
+        },
+        {
+          "nombre": "Maguarichi",
+          "codigo_postal": "33370"
+        },
+        {
+          "nombre": "Manuel Benavides",
+          "codigo_postal": "32980"
+        },
+        {
+          "nombre": "Matachí",
+          "codigo_postal": "31990"
+        },
+        {
+          "nombre": "Matamoros",
+          "codigo_postal": "33960"
+        },
+        {
+          "nombre": "Meoqui",
+          "codigo_postal": "33130"
+        },
+        {
+          "nombre": "Morelos",
+          "codigo_postal": "33450"
+        },
+        {
+          "nombre": "Moris",
+          "codigo_postal": "33340"
+        },
+        {
+          "nombre": "Namiquipa",
+          "codigo_postal": "31960"
+        },
+        {
+          "nombre": "Nonoava",
+          "codigo_postal": "33170"
+        },
+        {
+          "nombre": "Nuevo Casas Grandes",
+          "codigo_postal": "31700"
+        },
+        {
+          "nombre": "Ocampo",
+          "codigo_postal": "33320"
+        },
+        {
+          "nombre": "Ojinaga",
+          "codigo_postal": "32880"
+        },
+        {
+          "nombre": "Praxedis G. Guerrero",
+          "codigo_postal": "32780"
+        },
+        {
+          "nombre": "Riva Palacio",
+          "codigo_postal": "31640"
+        },
+        {
+          "nombre": "Rosales",
+          "codigo_postal": "33120"
+        },
+        {
+          "nombre": "Rosario",
+          "codigo_postal": "33530"
+        },
+        {
+          "nombre": "San Francisco de Borja",
+          "codigo_postal": "33160"
+        },
+        {
+          "nombre": "San Francisco de Conchos",
+          "codigo_postal": "33680"
+        },
+        {
+          "nombre": "San Francisco del Oro",
+          "codigo_postal": "33500"
+        },
+        {
+          "nombre": "Santa Bárbara",
+          "codigo_postal": "33580"
+        },
+        {
+          "nombre": "Santa Isabel",
+          "codigo_postal": "33270"
+        },
+        {
+          "nombre": "Satevó",
+          "codigo_postal": "33150"
+        },
+        {
+          "nombre": "Saucillo",
+          "codigo_postal": "33620"
+        },
+        {
+          "nombre": "Temósachic",
+          "codigo_postal": "31980"
+        },
+        {
+          "nombre": "Urique",
+          "codigo_postal": "33420"
+        },
+        {
+          "nombre": "Uruachi",
+          "codigo_postal": "33300"
+        },
+        {
+          "nombre": "Valle de Zaragoza",
+          "codigo_postal": "33650"
+        }
+      ]
+    },
+    {
+      "nombre": "Sinaloa",
+      "codigo": "SIN",
+      "municipios": [
+        {
+          "nombre": "Ahome",
+          "codigo_postal": "81200"
+        },
+        {
+          "nombre": "Angostura",
+          "codigo_postal": "81600"
+        },
+        {
+          "nombre": "Badiraguato",
+          "codigo_postal": "80500"
+        },
+        {
+          "nombre": "Choix",
+          "codigo_postal": "81700"
+        },
+        {
+          "nombre": "Concordia",
+          "codigo_postal": "82600"
+        },
+        {
+          "nombre": "Cosalá",
+          "codigo_postal": "80700"
+        },
+        {
+          "nombre": "Culiacán",
+          "codigo_postal": "80000"
+        },
+        {
+          "nombre": "El Fuerte",
+          "codigo_postal": "81800"
+        },
+        {
+          "nombre": "Elota",
+          "codigo_postal": "82700"
+        },
+        {
+          "nombre": "Escuinapa",
+          "codigo_postal": "82400"
+        },
+        {
+          "nombre": "Guasave",
+          "codigo_postal": "81000"
+        },
+        {
+          "nombre": "Mazatlán",
+          "codigo_postal": "82000"
+        },
+        {
+          "nombre": "Mocorito",
+          "codigo_postal": "80800"
+        },
+        {
+          "nombre": "Navolato",
+          "codigo_postal": "80320"
+        },
+        {
+          "nombre": "Rosario",
+          "codigo_postal": "82800"
+        },
+        {
+          "nombre": "Salvador Alvarado",
+          "codigo_postal": "81400"
+        },
+        {
+          "nombre": "San Ignacio",
+          "codigo_postal": "82900"
+        },
+        {
+          "nombre": "Sinaloa",
+          "codigo_postal": "81900"
+        }
+      ]
+    }
+  ]
+}

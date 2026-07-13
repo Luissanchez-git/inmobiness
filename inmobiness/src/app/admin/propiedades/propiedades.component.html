@@ -1,0 +1,310 @@
+<div class="min-h-screen bg-[#f7f5f2] font-sans">
+
+  <!-- PAGE HEADER -->
+  <div class=" px-6 py-8 sm:px-10 sm:py-10">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <p class="text-[#c9a96e] text-xs font-semibold tracking-[0.2em] uppercase mb-1">Modulo</p>
+        <h1 class="text-black text-4xl sm:text-5xl font-extrabold tracking-tight leading-none">Propiedades</h1>
+        <p class="text-white/40 text-sm mt-2">{{ filteredProperties.length }} propiedades encontradas</p>
+      </div>
+      <a [routerLink]="['/admin/propiedades/add']"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#c9a96e] hover:bg-[#b8924f] text-[#1a1a2e] font-semibold text-sm rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-px self-start sm:self-auto whitespace-nowrap">
+        <i class="pi pi-plus text-xs"></i>
+        Nueva Propiedad
+      </a>
+    </div>
+  </div>
+
+  <div class="px-4 sm:px-6 lg:px-10 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+
+      <!-- SIDEBAR FILTROS -->
+      <aside class="w-full lg:w-72 shrink-0">
+        <div class="bg-white rounded-2xl shadow-sm border border-[#e8e4df] overflow-hidden sticky top-6">
+
+          <div class="px-6 py-5 border-b border-[#e8e4df] flex items-center justify-between">
+            <span class="text-[#1a1a2e] font-bold text-sm tracking-wide uppercase">Filtros</span>
+            <button (click)="clearFilters()"
+              class="text-[#c9a96e] text-xs font-medium hover:text-[#b8924f] transition-colors">
+              Limpiar todo
+            </button>
+          </div>
+
+          <div class="p-6 space-y-7">
+
+            <!-- Filtro: Estado -->
+            <div>
+              <p class="text-[#1a1a2e] text-xs font-bold tracking-[0.15em] uppercase mb-3 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] inline-block"></span>
+                Estado
+              </p>
+              <div class="space-y-2">
+                <label *ngFor="let estado of estados"
+                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150"
+                  [ngClass]="selectedEstado === estado.value ? 'bg-[#1a1a2e]' : 'bg-[#f7f5f2] hover:bg-[#f0ece7]'">
+                  <input type="radio" name="estado" [value]="estado.value"
+                    [(ngModel)]="selectedEstado" (change)="applyFilters()"
+                    class="accent-[#c9a96e] w-4 h-4 cursor-pointer" />
+                  <span class="text-sm font-medium transition-colors flex-1"
+                    [ngClass]="selectedEstado === estado.value ? 'text-white' : 'text-[#4a4a5a]'">
+                    {{ estado.label }}
+                  </span>
+                  <span class="text-xs px-2 py-0.5 rounded-full font-medium"
+                    [ngClass]="selectedEstado === estado.value
+                      ? 'bg-white/20 text-[#c9a96e]'
+                      : 'bg-[#e8e4df] text-[#9a9a9a]'">
+                    {{ getCountByEstado(estado.value) }}
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="h-px bg-[#e8e4df]"></div>
+
+            <!-- Filtro: Tipo de propiedad -->
+            <div>
+              <p class="text-[#1a1a2e] text-xs font-bold tracking-[0.15em] uppercase mb-3 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] inline-block"></span>
+                Tipo de Propiedad
+              </p>
+              <div class="space-y-1.5">
+                <label *ngFor="let tipo of tiposPropiedad"
+                  class="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer transition-all duration-150"
+                  [ngClass]="selectedTipo === tipo.value ? 'bg-[#1a1a2e]' : 'hover:bg-[#f0ece7]'">
+                  <input type="radio" name="tipo" [value]="tipo.value"
+                    [(ngModel)]="selectedTipo" (change)="applyFilters()"
+                    class="accent-[#c9a96e] w-4 h-4 cursor-pointer" />
+                  <span class="text-base">{{ tipo.icon }}</span>
+                  <span class="text-sm font-medium transition-colors"
+                    [ngClass]="selectedTipo === tipo.value ? 'text-white' : 'text-[#4a4a5a]'">
+                    {{ tipo.label }}
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="h-px bg-[#e8e4df]"></div>
+
+            <!-- Filtro: Rango de precio -->
+            <div>
+              <p class="text-[#1a1a2e] text-xs font-bold tracking-[0.15em] uppercase mb-3 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#c9a96e] inline-block"></span>
+                Precio
+              </p>
+              <div class="space-y-2">
+                <label *ngFor="let rango of rangosPrecios"
+                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150"
+                  [ngClass]="selectedRango === rango.value ? 'bg-[#1a1a2e]' : 'hover:bg-[#f0ece7]'">
+                  <input type="radio" name="rango" [value]="rango.value"
+                    [(ngModel)]="selectedRango" (change)="applyFilters()"
+                    class="accent-[#c9a96e] w-4 h-4 cursor-pointer" />
+                  <span class="text-sm font-medium transition-colors"
+                    [ngClass]="selectedRango === rango.value ? 'text-white' : 'text-[#4a4a5a]'">
+                    {{ rango.label }}
+                  </span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 min-w-0">
+
+        <!-- Barra de búsqueda -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-6">
+          <div class="relative flex-1">
+            <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-[#9a9a9a] text-sm"></i>
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              (input)="applyFilters()"
+              placeholder="Buscar por nombre, colonia, ciudad..."
+              class="w-full pl-10 pr-4 py-3 bg-white border border-[#e8e4df] rounded-xl text-sm text-[#1a1a2e] placeholder-[#b0aba4] focus:outline-none focus:border-[#c9a96e] focus:shadow-[0_0_0_3px_rgba(201,169,110,0.12)] transition-all" />
+          </div>
+          <div class="flex gap-2">
+            <button
+              (click)="viewMode = 'grid'"
+              class="p-3 rounded-xl border transition-all duration-150"
+              [ngClass]="viewMode === 'grid'
+                ? 'bg-[#1a1a2e] border-[#1a1a2e] text-white'
+                : 'bg-white border-[#e8e4df] text-[#9a9a9a]'">
+              <i class="pi pi-th-large text-sm"></i>
+            </button>
+            <button
+              (click)="viewMode = 'list'"
+              class="p-3 rounded-xl border transition-all duration-150"
+              [ngClass]="viewMode === 'list'
+                ? 'bg-[#1a1a2e] border-[#1a1a2e] text-white'
+                : 'bg-white border-[#e8e4df] text-[#9a9a9a]'">
+              <i class="pi pi-list text-sm"></i>
+            </button>
+            <p-dropdown
+              [options]="sortOptions"
+              [(ngModel)]="selectedSort"
+              optionLabel="label"
+              (onChange)="applyFilters()"
+              styleClass="sort-dropdown"
+              placeholder="Ordenar">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <!-- Tags filtros activos -->
+        <div *ngIf="hasActiveFilters()" class="flex flex-wrap gap-2 mb-5">
+          <span *ngIf="selectedEstado"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e] text-white text-xs font-medium rounded-full">
+            {{ getLabelEstado() }}
+            <button (click)="selectedEstado = null; applyFilters()" class="hover:text-[#c9a96e] transition-colors ml-0.5">
+              <i class="pi pi-times text-[10px]"></i>
+            </button>
+          </span>
+          <span *ngIf="selectedTipo"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e] text-white text-xs font-medium rounded-full">
+            {{ getLabelTipo() }}
+            <button (click)="selectedTipo = null; applyFilters()" class="hover:text-[#c9a96e] transition-colors ml-0.5">
+              <i class="pi pi-times text-[10px]"></i>
+            </button>
+          </span>
+          <span *ngIf="selectedRango"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a2e] text-white text-xs font-medium rounded-full">
+            {{ getLabelRango() }}
+            <button (click)="selectedRango = null; applyFilters()" class="hover:text-[#c9a96e] transition-colors ml-0.5">
+              <i class="pi pi-times text-[10px]"></i>
+            </button>
+          </span>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="py-20 text-center text-[#9a9a9a]">
+          Cargando propiedades...
+        </div>
+
+        <!-- GRID VIEW -->
+        <div *ngIf="!loading && viewMode === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+          <div *ngFor="let prop of filteredProperties"
+            class="bg-white rounded-2xl overflow-hidden border border-[#e8e4df] shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+
+            <div class="relative h-44 bg-gradient-to-br from-amber-50 to-orange-100 overflow-hidden flex items-center justify-center text-5xl">
+              {{ getTipoIcon(prop.tipo) }}
+              <div class="absolute top-3 left-3">
+                <span class="px-2.5 py-1 bg-[#1a1a2e]/80 backdrop-blur-sm text-white text-[10px] font-bold tracking-wider uppercase rounded-lg">
+                  {{ prop.tipo }}
+                </span>
+              </div>
+              <div class="absolute top-3 right-3">
+                <span class="px-2.5 py-1 text-[10px] font-bold rounded-lg"
+                  [ngClass]="{
+                    'bg-emerald-100 text-emerald-700': prop.estado_publicacion === 'Activa',
+                    'bg-amber-100 text-amber-700':    prop.estado_publicacion === 'Pendiente',
+                    'bg-red-100 text-red-700':        prop.estado_publicacion === 'Inactiva'
+                  }">
+                  {{ prop.estado_publicacion }}
+                </span>
+              </div>
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
+                <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2">
+                  <button class="p-2 bg-white rounded-full shadow-lg hover:bg-[#c9a96e] hover:text-white transition-colors">
+                    <i class="pi pi-eye text-sm"></i>
+                  </button>
+                  <button class="p-2 bg-white rounded-full shadow-lg hover:bg-[#c9a96e] hover:text-white transition-colors">
+                    <i class="pi pi-pencil text-sm"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4">
+              <h3 class="font-bold text-[#1a1a2e] text-sm leading-snug line-clamp-1 mb-1">{{ prop.nombre }}</h3>
+              <p class="text-[#9a9a9a] text-xs flex items-center gap-1 mb-3">
+                <i class="pi pi-map-marker text-[#c9a96e]"></i>
+                {{ prop.colonia }}, {{ prop.estado }}
+              </p>
+              <div *ngIf="prop.recamaras || prop.banos || prop.m2" class="flex gap-3 text-xs text-[#6a6a7a] mb-3">
+                <span *ngIf="prop.recamaras" class="flex items-center gap-1">🛏 {{ prop.recamaras }} rec</span>
+                <span *ngIf="prop.banos" class="flex items-center gap-1">🚿 {{ prop.banos }} baños</span>
+                <span *ngIf="prop.m2" class="flex items-center gap-1">📐 {{ prop.m2 }} m²</span>
+              </div>
+              <div class="flex items-center justify-between pt-3 border-t border-[#f0ece7]">
+                <p class="text-[#c9a96e] font-bold text-base">
+                  {{ prop.precio | currency:prop.moneda:'symbol':'1.0-0' }}
+                </p>
+                <span class="text-[10px] text-[#9a9a9a] bg-[#f7f5f2] px-2 py-1 rounded-lg">{{ prop.operacion }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div *ngIf="filteredProperties.length === 0" class="col-span-full py-20 text-center">
+            <p class="text-5xl mb-4">🏚️</p>
+            <p class="text-[#1a1a2e] font-bold text-lg mb-1">Sin resultados</p>
+            <p class="text-[#9a9a9a] text-sm">Intenta ajustar los filtros de búsqueda</p>
+            <button (click)="clearFilters()"
+              class="mt-4 px-5 py-2 bg-[#c9a96e] text-white text-sm font-medium rounded-xl hover:bg-[#b8924f] transition-colors">
+              Limpiar filtros
+            </button>
+          </div>
+        </div>
+
+        <!-- LIST VIEW -->
+        <div *ngIf="!loading && viewMode === 'list'" class="space-y-3">
+          <div *ngFor="let prop of filteredProperties"
+            class="bg-white rounded-2xl border border-[#e8e4df] shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden group cursor-pointer">
+            <div class="flex items-center gap-4 p-4">
+              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center text-2xl shrink-0">
+                {{ getTipoIcon(prop.tipo) }}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-bold text-[#1a1a2e] text-sm">{{ prop.nombre }}</h3>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    [ngClass]="{
+                      'bg-emerald-100 text-emerald-700': prop.estado_publicacion === 'Activa',
+                      'bg-amber-100 text-amber-700':    prop.estado_publicacion === 'Pendiente',
+                      'bg-red-100 text-red-700':        prop.estado_publicacion === 'Inactiva'
+                    }">
+                    {{ prop.estado_publicacion }}
+                  </span>
+                </div>
+                <p class="text-[#9a9a9a] text-xs flex items-center gap-1 mt-0.5">
+                  <i class="pi pi-map-marker text-[#c9a96e] text-[10px]"></i>
+                  {{ prop.colonia }}, {{ prop.estado }}
+                </p>
+                <div *ngIf="prop.recamaras || prop.banos || prop.m2" class="flex gap-3 text-xs text-[#6a6a7a] mt-1.5">
+                  <span *ngIf="prop.recamaras">🛏 {{ prop.recamaras }} rec</span>
+                  <span *ngIf="prop.banos">🚿 {{ prop.banos }} baños</span>
+                  <span *ngIf="prop.m2">📐 {{ prop.m2 }} m²</span>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="text-[#c9a96e] font-bold text-base">{{ prop.precio | currency:prop.moneda:'symbol':'1.0-0' }}</p>
+                <p class="text-[#9a9a9a] text-xs">{{ prop.tipo }} · {{ prop.operacion }}</p>
+              </div>
+              <div class="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                <button class="p-2 rounded-lg hover:bg-[#f7f5f2] text-[#9a9a9a] hover:text-[#1a1a2e] transition-colors">
+                  <i class="pi pi-eye text-sm"></i>
+                </button>
+                <button class="p-2 rounded-lg hover:bg-[#f7f5f2] text-[#9a9a9a] hover:text-[#c9a96e] transition-colors">
+                  <i class="pi pi-pencil text-sm"></i>
+                </button>
+                <button (click)="eliminar(prop.id, $event)" class="p-2 rounded-lg hover:bg-red-50 text-[#9a9a9a] hover:text-red-500 transition-colors">
+                  <i class="pi pi-trash text-sm"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="filteredProperties.length === 0" class="py-20 text-center">
+            <p class="text-5xl mb-4">🏚️</p>
+            <p class="text-[#1a1a2e] font-bold text-lg mb-1">Sin resultados</p>
+            <p class="text-[#9a9a9a] text-sm">Intenta ajustar los filtros</p>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>

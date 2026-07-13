@@ -1,0 +1,194 @@
+<section class="font-sans bg-gray-50 min-h-screen px-4 py-8">
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-24 text-gray-400">
+    Cargando propiedad...
+  </div>
+
+  <!-- No encontrada -->
+  <div *ngIf="!loading && notFound" class="text-center py-24">
+    <h2 class="text-xl font-bold text-gray-700 mb-2">Propiedad no encontrada</h2>
+    <a routerLink="/propiedades" class="text-primary underline">Volver a resultados</a>
+  </div>
+
+  <div class="" *ngIf="!loading && propiedad as p">
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <a routerLink="/propiedades" class="text-sm text-gray-500 hover:text-primary inline-block mb-3">&larr; Volver a resultados</a>
+      <h1 class="font-montserrat text-3xl md:text-4xl font-bold text-primary mb-3">{{ p.nombre }}</h1>
+      <div class="text-3xl font-bold text-secondary mb-2">
+        ${{ formatPrecio() }} {{ p.moneda }}
+        <span *ngIf="p.operacion === 'Renta'" class="text-lg font-normal text-gray-600">/mes</span>
+      </div>
+      <div class="flex items-center justify-center gap-4 text-sm text-gray-600">
+        <span class="flex items-center gap-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          {{ ubicacion() }}
+        </span>
+        <span>•</span>
+        <span>{{ p.tipo }}</span>
+      </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- ══ LEFT – imagen fija ══ -->
+      <div class="lg:sticky lg:top-8 lg:self-start">
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden relative  ">
+          <img [src]="imagenPrincipal()"
+               [alt]="p.nombre"
+               class="w-full h-full object-cover">
+          <button (click)="toggleLike()" class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm hover:bg-white p-3 rounded-full shadow-lg transition-all duration-300 group">
+            <svg class="w-6 h-6 transition-colors duration-300"
+                 [class.text-red-500]="liked" [class.text-gray-700]="!liked"
+                 [attr.fill]="liked ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
+            </svg>
+          </button>
+          <div class="absolute bottom-4 left-4 bg-primary/90 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+            Disponible para {{ p.operacion === 'Renta' ? 'rentar' : 'vender' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ RIGHT – acordeones sin scroll ══ -->
+      <div class="space-y-3">
+
+        <!-- ── 1. Detalles de la Propiedad ── -->
+        <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+          <button class="acc-btn w-full flex items-center justify-between p-5 text-left"
+                  [class.open]="isOpen('detalles')" (click)="toggle('detalles')">
+            <span class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+              </div>
+              <span class="font-bold text-gray-800">Detalles de la Propiedad</span>
+            </span>
+            <svg class="acc-chevron w-5 h-5 text-gray-400 flex-shrink-0"
+                 [class.open]="isOpen('detalles')" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="acc-body" [class.open]="isOpen('detalles')">
+            <div class="px-5 pb-5">
+              <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 text-center">
+                  <div class="text-3xl font-bold text-blue-600 mb-1">{{ p.m2_terreno ?? '—' }}</div>
+                  <div class="text-sm text-gray-600 font-medium">m² Terreno</div>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 text-center">
+                  <div class="text-3xl font-bold text-blue-600 mb-1">{{ p.m2_construccion ?? '—' }}</div>
+                  <div class="text-sm text-gray-600 font-medium">m² Construcción</div>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 text-center">
+                  <div class="text-3xl font-bold text-green-600 mb-1">{{ p.recamaras ?? '—' }}</div>
+                  <div class="text-sm text-gray-600 font-medium">Recámaras</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 text-center">
+                  <div class="text-3xl font-bold text-purple-600 mb-1">{{ p.banos ?? '—' }}</div>
+                  <div class="text-sm text-gray-600 font-medium">Baños</div>
+                </div>
+              </div>
+              <div class="border-t border-gray-100 pt-4" *ngIf="p.estacionamiento || p.niveles || p.antiguedad">
+                <h3 class="text-sm font-semibold text-gray-700 mb-3">Otros datos</h3>
+                <div class="flex flex-wrap gap-2">
+                  <span *ngIf="p.estacionamiento" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">🚗 {{ p.estacionamiento }} estacionamiento(s)</span>
+                  <span *ngIf="p.niveles" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">🏗️ {{ p.niveles }} nivel(es)</span>
+                  <span *ngIf="p.antiguedad" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">📅 {{ p.antiguedad }} años de antigüedad</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 2. Descripción ── -->
+        <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden" *ngIf="p.descripcion">
+          <button class="acc-btn w-full flex items-center justify-between p-5 text-left"
+                  [class.open]="isOpen('descripcion')" (click)="toggle('descripcion')">
+            <span class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                </svg>
+              </div>
+              <span class="font-bold text-gray-800">Descripción</span>
+            </span>
+            <svg class="acc-chevron w-5 h-5 text-gray-400 flex-shrink-0"
+                 [class.open]="isOpen('descripcion')" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="acc-body" [class.open]="isOpen('descripcion')">
+            <div class="px-5 pb-5 text-gray-600 text-sm leading-relaxed">
+              {{ p.descripcion }}
+            </div>
+          </div>
+        </div>
+
+        <!-- ── 3. Ubicación ── -->
+        <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+          <button class="acc-btn w-full flex items-center justify-between p-5 text-left"
+                  [class.open]="isOpen('ubicacion')" (click)="toggle('ubicacion')">
+            <span class="flex items-center gap-3">
+              <div class="w-9 h-9 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+              </div>
+              <span class="font-bold text-gray-800">Ubicación</span>
+            </span>
+            <svg class="acc-chevron w-5 h-5 text-gray-400 flex-shrink-0"
+                 [class.open]="isOpen('ubicacion')" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="acc-body" [class.open]="isOpen('ubicacion')">
+            <div class="px-5 pb-5">
+              <div class="rounded-xl overflow-hidden mb-4 border border-gray-200 h-56">
+                <iframe [src]="mapUrl()" class="w-full h-full border-0" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+              </div>
+              <div class="space-y-1 text-sm text-gray-700">
+                <div *ngIf="p.calle"><span class="font-semibold">Calle:</span> {{ p.calle }} <span *ngIf="p.numero">#{{ p.numero }}</span></div>
+                <div><span class="font-semibold">Colonia:</span> {{ p.colonia }}</div>
+                <div><span class="font-semibold">Municipio:</span> {{ p.municipio }}</div>
+                <div><span class="font-semibold">Estado:</span> {{ p.estado }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-100 space-y-3">
+          <button class="w-full bg-white border-2 border-primary text-primary hover:bg-blue-50 font-semibold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            Contactar agente
+          </button>
+          <button (click)="compartir()"
+                  class="w-full bg-gray-50 border-2 border-gray-200 text-gray-700 hover:bg-gray-100 font-semibold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342a3 3 0 100-2.684m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.368-2.684 3 3 0 00-5.368 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+            {{ shared ? 'Enlace copiado ✓' : 'Compartir propiedad' }}
+          </button>
+        </div>
+
+      </div>
+      <!-- fin RIGHT -->
+
+    </div>
+  </div>
+</section>

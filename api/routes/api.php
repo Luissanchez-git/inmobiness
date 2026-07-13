@@ -17,6 +17,9 @@ use App\Http\Controllers\RoutesController;
 use App\Http\Middleware\JwtMiddleware;
 use App\Http\Controllers\AttributesController;
 use App\Http\Controllers\PdfController;
+use App\Http\Controllers\PropiedadesController;
+use App\Http\Controllers\EstadosController;
+use App\Http\Controllers\MunicipiosController;
 
 Route::resource('/userss', UsersController::class);
 Route::post('/userss/uploadimg',[UsersController::class, 'uploadImg']);
@@ -48,6 +51,12 @@ Route::get('/payments/client/{id}', [PaymentsController::class,'showPaymentsUser
 
 
 Route::resource('/attributes',AttributesController::class);
+
+Route::resource('/propiedades', PropiedadesController::class);
+
+Route::get('/estados', [EstadosController::class, 'index']);
+Route::get('/estados/{id}/municipios', [EstadosController::class, 'municipios']);
+Route::get('/municipios/{id}/colonias', [MunicipiosController::class, 'colonias']);
 
 
 //AUTH
